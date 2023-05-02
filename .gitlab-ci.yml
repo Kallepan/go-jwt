@@ -1,0 +1,17 @@
+variables:
+   NO_PROXY: ".server.home"
+
+services:
+  - name: docker:dind
+    entrypoint: ["dockerd-entrypoint.sh", "--tls=false"]
+
+before_script:
+  - docker info
+
+build-backend:
+  image: docker:stable
+  stage: build
+  script:
+    - echo "$DOCKER_REGISTRY_PASS" | docker login registry.server.home --username $DOCKER_REGISTRY_USER --password-stdin
+    - docker build -t registry.server.home/kalle/go-jwt:latest .
+    - docker push registry.server.home/kalle/go-jwt:latest
