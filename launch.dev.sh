@@ -4,4 +4,4 @@
 
 export $(grep -v '^#' ./.dev.env | xargs)
 
-go run cmd/main.go
+go run main.go

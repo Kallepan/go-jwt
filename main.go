@@ -9,9 +9,25 @@ import (
 	"gitlab.com/kallepan/go-jwt/common/middlewares"
 	"gitlab.com/kallepan/go-jwt/env"
 	"gitlab.com/kallepan/go-jwt/jwt"
+	"gitlab.com/kallepan/go-jwt/ldap"
 )
 
 func main() {
+	// Connect to LDAP
+	ldapInfo := env.GetLDAPInfo()
+
+	if ldapInfo.BindUsername != "" && ldapInfo.BindPassword != "" {
+		err := ldap.Connect(ldapInfo)
+
+		if err != nil {
+			println("Failed to connect to LDAP!")
+			panic(err)
+		}
+	} else {
+		println("LDAP bind credentials not provided, skipping LDAP connection...")
+	}
+
+	// Connect to DB
 	connectionString := env.GetConnectionString()
 	err := database.Connect(connectionString)
 
