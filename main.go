@@ -7,12 +7,12 @@ import (
 	"gitlab.com/kallepan/go-jwt/common/controllers"
 	"gitlab.com/kallepan/go-jwt/common/database"
 	"gitlab.com/kallepan/go-jwt/common/middlewares"
+	"gitlab.com/kallepan/go-jwt/env"
 	"gitlab.com/kallepan/go-jwt/jwt"
-	"gitlab.com/kallepan/go-jwt/utils"
 )
 
 func main() {
-	connectionString := utils.GetConnectionString()
+	connectionString := env.GetConnectionString()
 	database.Connect(connectionString)
 
 	router := initRouter()
@@ -25,7 +25,7 @@ func initRouter() *gin.Engine {
 	router.NoRoute(middlewares.NoRouteHandler)
 	router.Use(middlewares.ErrorHandler)
 	router.Use(middlewares.CORSMiddleware())
-	router.SetTrustedProxies(strings.Split(utils.GetValueFromEnv("TRUSTED_PROXIES", ","), ","))
+	router.SetTrustedProxies(strings.Split(env.GetValueFromEnv("TRUSTED_PROXIES", ","), ","))
 
 	auth := router.Group("/api")
 	{
