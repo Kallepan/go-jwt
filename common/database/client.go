@@ -8,22 +8,20 @@ import (
 )
 
 var Instance *sql.DB
-var dbError error
 
-func Connect(connectionString string) {
-	Instance, dbError = sql.Open("postgres", connectionString)
+func Connect(connectionString string) error {
+	Instance, err := sql.Open("postgres", connectionString)
 
-	if dbError != nil {
-		log.Fatal("Can not connect to DB: ", dbError)
-		panic("Failed to connect to database!")
+	if err != nil {
+		return err
 	}
 
-	dbError = Instance.Ping()
+	err = Instance.Ping()
 
-	if dbError != nil {
-		log.Fatal("Can not connect to DB: ", dbError)
-		panic("Failed to connect to database!")
+	if err != nil {
+		return err
 	}
 
 	log.Println("Connected to database!")
+	return nil
 }

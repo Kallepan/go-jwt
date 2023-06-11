@@ -13,7 +13,12 @@ import (
 
 func main() {
 	connectionString := env.GetConnectionString()
-	database.Connect(connectionString)
+	err := database.Connect(connectionString)
+
+	if err != nil {
+		println("Failed to connect to database!")
+		panic(err)
+	}
 
 	router := initRouter()
 	router.Run(":8080")
