@@ -12,3 +12,4 @@ CREATE TABLE users(
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ALTER TABLE users ALTER COLUMN user_id SET DEFAULT uuid_generate_v4();
 CREATE UNIQUE INDEX users_username_idx ON users (username);
+CREATE UNIQUE INDEX users_email_idx ON users (email);
