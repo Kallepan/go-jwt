@@ -2,11 +2,11 @@ FROM golang:alpine AS builder
 
 WORKDIR /project/go-jwt
 
-COPY go.* ./
+COPY src/go.* ./
 
 RUN go mod download
 
-COPY . .
+COPY src/ .
 RUN go build -o /project/go-jwt/build/main .
 
 FROM alpine:latest
