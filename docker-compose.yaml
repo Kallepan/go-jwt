@@ -22,6 +22,18 @@ services:
     volumes:
       - openldap:/bitnami
 
+  go-jwt:
+    build: .
+    container_name: go-jwt
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .dev.env
+    depends_on:
+      - db
+      - openldap
+      
 volumes:
   db:
   openldap:
