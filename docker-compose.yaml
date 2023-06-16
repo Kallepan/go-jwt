@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   db:
-    build: psql/.
+    image: postgres:latest
     container_name: postgres
     restart: always
     ports:

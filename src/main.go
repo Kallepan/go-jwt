@@ -29,13 +29,8 @@ func main() {
 
 	// Connect to DB
 	connectionString := env.GetConnectionString()
-	err := database.Connect(connectionString)
-
-	if err != nil {
-		println("Failed to connect to database!")
-		panic(err)
-	}
-
+	database.Connect(connectionString)
+	database.Migrate()
 	router := initRouter()
 	router.Run(":8080")
 }
