@@ -1,8 +1,8 @@
-version: '3.3'
+version: '3.6'
 
 services:
   db:
-    build: psql/.
+    image: postgres:latest
     container_name: postgres
     restart: always
     ports:
@@ -10,7 +10,30 @@ services:
     env_file:
       - .dev.env
     volumes:
-      - data:/var/lib/postgresql/data
-  
+      - db:/var/lib/postgresql/data
+
+  openldap:
+    image: bitnami/openldap:latest
+    ports:
+      - '1389:1389'
+      - '1636:1636'
+    env_file:
+      - .dev.env
+    volumes:
+      - openldap:/bitnami
+
+  go-jwt:
+    build: .
+    container_name: go-jwt
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .dev.env
+    depends_on:
+      - db
+      - openldap
+      
 volumes:
-  data:
+  db:
+  openldap:

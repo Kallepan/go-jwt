@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"gitlab.com/kallepan/go-jwt/utils"
+	"gitlab.com/kallepan/go-jwt/env"
 )
 
-var jwtKey = []byte(utils.GetValueFromEnv("JWT_KEY", "supersecret"))
+var jwtKey = []byte(env.GetValueFromEnv("JWT_KEY", "supersecret"))
 
 type JWTClaim struct {
 	Username string `json:"username"`

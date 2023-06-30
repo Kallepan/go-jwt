@@ -1,10 +1,10 @@
-package utils
+package env
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"strconv"
+
+	"gitlab.com/kallepan/go-jwt/ldap"
 )
 
 type DbInfo struct {
@@ -12,14 +12,36 @@ type DbInfo struct {
 	Password string
 	DbName   string
 	Host     string
-	Port     int
+	Port     string
+}
+
+func GetLDAPInfo() ldap.LDAPInfo {
+	envSrcUser := "LDAP_BIND_USERNAME"
+	envSrcPass := "LDAP_BIND_PASSWORD"
+	envSrcFQDN := "LDAP_FQDN"
+	envSrcBaseDN := "LDAP_BASE_DN"
+	envSrcFilter := "LDAP_FILTER"
+	envSrcPort := "LDAP_PORT"
+	envSrcSSLPort := "LDAP_SSL_PORT"
+
+	lInfo := ldap.LDAPInfo{
+		BindUsername: GetValueFromEnv(envSrcUser, ""),
+		BindPassword: GetValueFromEnv(envSrcPass, ""),
+		FQDN:         GetValueFromEnv(envSrcFQDN, ""),
+		BaseDN:       GetValueFromEnv(envSrcBaseDN, ""),
+		Filter:       GetValueFromEnv(envSrcFilter, ""),
+		Port:         GetValueFromEnv(envSrcPort, ""),
+		SSLPort:      GetValueFromEnv(envSrcSSLPort, ""),
+	}
+
+	return lInfo
 }
 
 func GetConnectionString() string {
 	dbInfo := getDbInfo()
 
 	connectionString := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		dbInfo.Host,
 		dbInfo.User,
 		dbInfo.Password,
@@ -37,17 +59,12 @@ func getDbInfo() DbInfo {
 	envSrcPort := "POSTGRES_PORT"
 	envSrcHost := "POSTGRES_HOST"
 
-	port, err := strconv.Atoi(GetValueFromEnv(envSrcPort, "5432"))
-	if err != nil {
-		log.Fatal("Failed to convert port to int")
-	}
-
 	dbInfo := DbInfo{
 		User:     GetValueFromEnv(envSrcUser, "test"),
 		Password: GetValueFromEnv(envSrcPass, "test"),
 		DbName:   GetValueFromEnv(envSrcDbName, "test"),
 		Host:     GetValueFromEnv(envSrcHost, "localhost"),
-		Port:     port,
+		Port:     GetValueFromEnv(envSrcPort, "5432"),
 	}
 
 	return dbInfo
