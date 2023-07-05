@@ -4,6 +4,7 @@
 echo "Waiting for PostgreSQL to start..."
 until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT -q; do
   sleep 1
+  echo "Retrying... with $POSTGRES_HOST:$POSTGRES_PORT"
 done
 
 echo "PostgreSQL is running!"
