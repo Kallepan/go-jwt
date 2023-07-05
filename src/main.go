@@ -31,6 +31,10 @@ func main() {
 	connectionString := env.GetConnectionString()
 	database.Connect(connectionString)
 	database.Migrate()
+
+	// Create admin user
+	jwt.CreateAdminUser()
+
 	router := initRouter()
 	router.Run(":8080")
 }

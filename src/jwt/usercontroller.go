@@ -2,12 +2,42 @@ package jwt
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/kallepan/go-jwt/common/database"
 	"gitlab.com/kallepan/go-jwt/common/models"
 )
+
+func CreateAdminUser() {
+	var user models.User
+
+	user.Email = os.Getenv("ADMIN_EMAIL")
+	user.FirstName = "admin"
+	user.LastName = "admin"
+	user.Username = os.Getenv("ADMIN_USERNAME")
+	user.Password = os.Getenv("ADMIN_PASSWORD")
+
+	if CheckIfUserExists(user.Username) {
+		log.Println("Admin user already exists")
+		return
+	}
+
+	if err := user.HashPassword(user.Password); err != nil {
+		log.Fatal("Error hashing password")
+	}
+
+	query := "INSERT INTO users (email, firstname, lastname, username, password) VALUES ($1, $2, $3, $4, $5) RETURNING user_id"
+	err := database.Instance.QueryRow(query, &user.Email, &user.FirstName, &user.LastName, &user.Username, &user.Password).Scan(&user.UserId)
+
+	if err != nil {
+		log.Fatal("Error creating admin user")
+	}
+
+	log.Println("Admin user created")
+}
 
 func CheckIfUserExists(username string) bool {
 	var exists bool
